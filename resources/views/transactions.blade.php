@@ -26,7 +26,7 @@
         <input type="number" id="amount" name="amount"><br><br>
         <label for="description">Description:</label>
         <input type="text" id="description" name="description"><br><br>
-        <input type="submit" value="Add Transaction">
+        <input type="submit" value="Submit Transaction">
     </form>
 @endsection
 
