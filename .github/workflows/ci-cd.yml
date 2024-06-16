@@ -1,0 +1,39 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login Dockerhub
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+      # - name: Create .env file
+      #   run: |
+      #     echo "APP_URL=ec2-54-169-129-175.ap-southeast-1.compute.amazonaws.com" >> .env
+
+      - name: Build the Docker image
+        run: docker build -t pat0112/spendy .
+      - name: Push to Dockerhub
+        run: docker push pat0112/spendy:latest
+
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker image
+        run: sudo docker pull pat0112/spendy:latest
+      - name: Delete Old docker container
+        run: sudo docker rm -f spendy-container || true
+      - name: Run Docker Container
+        run: sudo docker run -d -p 9000:9000 --name spendy-container pat0112/spendy
