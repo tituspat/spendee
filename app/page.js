@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState, useContext, useEffect } from "react";
-import { financeContext } from "@/lib/store/finance-context";
-import { authContext } from "@/lib/store/auth-context";
+import { useState, useContext, useEffect } from 'react';
+import { financeContext } from '@/lib/store/finance-context';
+import { authContext } from '@/lib/store/auth-context';
 
-import { currencyFormatter } from "@/lib/utils";
+import { currencyFormatter } from '@/lib/utils';
 
-import ExpenseCategoryItem from "@/components/ExpenseCategoryItem";
+import ExpenseCategoryItem from '@/components/ExpenseCategoryItem';
 
-import AddIncomeModal from "@/components/modals/AddIncomeModal";
-import AddExpensesModal from "@/components/modals/AddExpensesModal";
-import SignIn from "@/components/SignIn";
+import AddIncomeModal from '@/components/modals/AddIncomeModal';
+import AddExpensesModal from '@/components/modals/AddExpensesModal';
+import SignIn from '@/components/SignIn';
 
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -45,16 +45,10 @@ export default function Home() {
   return (
     <>
       {/* Add Income Modal */}
-      <AddIncomeModal
-        show={showAddIncomeModal}
-        onClose={setShowAddIncomeModal}
-      />
+      <AddIncomeModal show={showAddIncomeModal} onClose={setShowAddIncomeModal} />
 
       {/* Add Expenses Modal */}
-      <AddExpensesModal
-        show={showAddExpenseModal}
-        onClose={setShowAddExpenseModal}
-      />
+      <AddExpensesModal show={showAddExpenseModal} onClose={setShowAddExpenseModal} />
 
       <main className="container max-w-2xl px-6 mx-auto">
         <section className="py-3">
@@ -101,10 +95,10 @@ export default function Home() {
                 labels: expenses.map((expense) => expense.title),
                 datasets: [
                   {
-                    label: "Expenses",
+                    label: 'Expenses',
                     data: expenses.map((expense) => expense.total),
                     backgroundColor: expenses.map((expense) => expense.color),
-                    borderColor: ["#18181b"],
+                    borderColor: ['#18181b'],
                     borderWidth: 5,
                   },
                 ],
