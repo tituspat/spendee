@@ -12,7 +12,9 @@ import { toast } from "react-toastify";
 function AddExpensesModal({ show, onClose }) {
   const [expenseAmount, setExpenseAmount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [showAddExpense, setShowAddExpense] = useState(false);
+  
 
   const { expenses, addExpenseItem, addCategory } = useContext(financeContext);
 
@@ -34,6 +36,7 @@ function AddExpensesModal({ show, onClose }) {
           amount: +expenseAmount,
           createdAt: new Date(),
           id: uuidv4(),
+          paymentMethod,
         },
       ],
     };
@@ -44,6 +47,7 @@ function AddExpensesModal({ show, onClose }) {
       console.log(newExpense);
       setExpenseAmount("");
       setSelectedCategory(null);
+      setPaymentMethod("");
       onClose();
       toast.success("Expense Item Added!");
     } catch (error) {
@@ -80,6 +84,33 @@ function AddExpensesModal({ show, onClose }) {
             setExpenseAmount(e.target.value);
           }}
         />
+<label
+  className="text-lg text-white mb-2 block"
+  style={{ fontSize: "16px" }}
+>
+  Select Payment Method:
+</label>
+<select 
+  value={paymentMethod}
+  onChange={(e) => setPaymentMethod(e.target.value)}
+  className="p-2 border border-gray-300 rounded-md bg-transparent text-gray-700 w-full"
+  style={{
+    fontSize: "16px",
+    backgroundColor: "rgba(255, 255, 255, 0.5)", // Background transparan dengan opasitas
+    padding: "0.5rem", // Padding yang serasi dengan field amount
+    border: "1px solid #ccc", // Border serasi dengan field amount
+  
+  }} 
+
+>
+  <option value="">Select method</option>
+  <option value="cash" className="text-gray-700">Cash</option>
+  <option value="credit card" className="text-gray-700">Credit Card</option>
+  <option value="debit card" className="text-gray-700">Debit Card</option>
+  <option value="ShopeePay" className="text-gray-700">ShopeePay</option>
+  <option value="GoPay" className="text-gray-700">GoPay</option>
+  <option value="other" className="text-gray-700">Other</option>
+</select>
       </div>
 
       {/* Expense Categories */}

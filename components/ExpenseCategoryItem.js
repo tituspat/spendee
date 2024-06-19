@@ -6,6 +6,7 @@ import ViewExpenseModal from "./modals/ViewExpenseModal";
 
 function ExpenseCategoryItem({ expense }) {
   const [showViewExpenseModal, setViewExpenseModal] = useState(false);
+  const paymentMethod = expense.paymentMethod;
 
   return (
     <>
@@ -13,6 +14,7 @@ function ExpenseCategoryItem({ expense }) {
         show={showViewExpenseModal}
         onClose={setViewExpenseModal}
         expense={expense}
+        paymentMethod={paymentMethod}
       />
       <button
         onClick={() => {
