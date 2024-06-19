@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 function AddIncomeModal({ show, onClose }) {
   const amountRef = useRef();
   const descriptionRef = useRef();
-  const { income, addIncomeItem, removeIncomeItem } =
+  const { income, addIncomeItem} =
     useContext(financeContext);
 
   const { user } = useContext(authContext);
@@ -41,15 +41,6 @@ function AddIncomeModal({ show, onClose }) {
     }
   };
 
-  const deleteIncomeEntryHandler = async (incomeId) => {
-    try {
-      await removeIncomeItem(incomeId);
-      toast.success("Income deleted successfully.");
-    } catch (error) {
-      console.log(error.message);
-      toast.error(error.message);
-    }
-  };
 
   return (
     <Modal show={show} onClose={onClose}>
@@ -83,30 +74,6 @@ function AddIncomeModal({ show, onClose }) {
         </button>
       </form>
 
-      <div className="flex flex-col gap-4 mt-6">
-        <h3 className="text-2xl font-bold">Income History</h3>
-
-        {income.map((i) => {
-          return (
-            <div className="flex justify-between item-center" key={i.id}>
-              <div>
-                <p className="font-semibold">{i.description}</p>
-                <small className="text-xs">{i.createdAt.toISOString()}</small>
-              </div>
-              <p className="flex items-center gap-2">
-                {currencyFormatter(i.amount)}
-                <button
-                  onClick={() => {
-                    deleteIncomeEntryHandler(i.id);
-                  }}
-                >
-                  <FaRegTrashAlt />
-                </button>
-              </p>
-            </div>
-          );
-        })}
-      </div>
     </Modal>
   );
 }
