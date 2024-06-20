@@ -72,9 +72,10 @@ function AddExpensesModal({ show, onClose }) {
 
   return (
     <Modal show={show} onClose={onClose}>
-      <div className="flex flex-col gap-4">
-        <label>Enter an amount..</label>
-        <input
+      <h2 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}> EXPENSES </h2>
+      <div className="input-group" >
+        <label>Enter an amount : </label>
+        <input className="inputan"
           type="number"
           min={0.01}
           step={0.01}
@@ -84,26 +85,15 @@ function AddExpensesModal({ show, onClose }) {
             setExpenseAmount(e.target.value);
           }}
         />
-<label
-  className="text-lg text-white mb-2 block"
-  style={{ fontSize: "16px" }}
->
-  Select Payment Method:
+<label>
+  Select Payment Method :
 </label>
 <select 
   value={paymentMethod}
   onChange={(e) => setPaymentMethod(e.target.value)}
-  className="p-2 border border-gray-300 rounded-md bg-transparent text-gray-700 w-full"
-  style={{
-    fontSize: "16px",
-    backgroundColor: "rgba(255, 255, 255, 0.5)", // Background transparan dengan opasitas
-    padding: "0.5rem", // Padding yang serasi dengan field amount
-    border: "1px solid #ccc", // Border serasi dengan field amount
-  
-  }} 
-
+  className="inputan"
 >
-  <option value="">Select method</option>
+  <option value="">Select Payment method</option>
   <option value="cash" className="text-gray-700">Cash</option>
   <option value="credit card" className="text-gray-700">Credit Card</option>
   <option value="debit card" className="text-gray-700">Debit Card</option>
@@ -111,13 +101,13 @@ function AddExpensesModal({ show, onClose }) {
   <option value="GoPay" className="text-gray-700">GoPay</option>
   <option value="other" className="text-gray-700">Other</option>
 </select>
-      </div>
+</div>
 
       {/* Expense Categories */}
       {expenseAmount > 0 && (
         <div className="flex flex-col gap-4 mt-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl capitalize">Select expense category</h3>
+            <label>Select expense category</label>
             <button
               onClick={() => {
                 setShowAddExpense(true);

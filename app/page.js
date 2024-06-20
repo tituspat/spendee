@@ -24,7 +24,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function Home() {
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
-
+  const [showIncomeDetail, setShowIncomeDetail] = useState(false);
+  const [showExpenseDetail, setShowExpenseDetail] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income,removeIncomeItem } = useContext(financeContext);
   const { user } = useContext(authContext);
@@ -71,7 +72,12 @@ export default function Home() {
   
       return acc;
     }, {});
-  
+
+    const options = {
+      maintainAspectRatio: false,
+      responsive: true,
+    };
+
     // Mengubah hasil pengelompokkan menjadi format yang dapat digunakan oleh Doughnut Chart
     const chartData = {
       labels: Object.keys(groupedData),
@@ -109,8 +115,8 @@ export default function Home() {
 
     return (
       <section className="py-6">
-        <div className="w-1/2 mx-auto mt-6">
-          <Doughnut data={chartData} />
+        <div className="w-1/2 mx-auto mt-6" style={{ position: 'relative', height: '40vh', width: '40vw' }}>
+          <Doughnut data={chartData} options={options} />
         </div>
       </section>
     );
@@ -130,88 +136,140 @@ export default function Home() {
       <AddExpensesModal show={showAddExpenseModal} onClose={setShowAddExpenseModal} />
 
       <main className="container max-w-2xl px-6 mx-auto">
-        <section className="py-3">
-          <small className="text-gray-400 text-md">My Balance</small>
-          <h2 className="text-4xl font-bold">{currencyFormatter(balance)}</h2>
-        </section>
+      <div className="flex flex-col items-center justify-center h-full">
+  {/* My Balance Section */}
+  <section className="py-3 text-center">
+    <small className="text-gray-400 text-md">My Balance</small>
+    <h2 className="text-4xl font-bold">{currencyFormatter(balance)}</h2>
+  </section>
 
-        <section className="flex items-center gap-2 py-3">
-          <button
-            onClick={() => {
-              setShowAddExpenseModal(true);
-            }}
-            className="btn btn-primary"
-          >
-            + Expenses
-          </button>
-          <button
-            onClick={() => {
-              setShowAddIncomeModal(true);
-            }}
-            className="btn btn-primary-outline"
-          >
-            + Income
-          </button>
-        </section>
+  {/* Buttons Section */}
+  <section className="flex items-center gap-2 py-3">
+    <button
+      onClick={() => {
+        setShowAddExpenseModal(true);
+      }}
+      className="btn btn-primary"
+    >
+      + Expenses
+    </button>
+    <button
+      onClick={() => {
+        setShowAddIncomeModal(true);
+      }}
+      className="btn btn-primary-outline"
+    >
+      + Income
+    </button>
+  </section>
+</div>
 
-        {/* Income History */}
-        <section className="py-6">
+
+
+{/* My Income Section */}
+<section className="py-6">
+        <div className="flex justify-between items-center">
           <h3 className="text-2xl">My Income</h3>
+          <button
+            className="text-lime-500 hover:text-lime-700"
+            onClick={() => setShowIncomeDetail(!showIncomeDetail)}
+          >
+            {showIncomeDetail ? "Hide Details" : "Show Details"}
+          </button>
+        </div>
+        {showIncomeDetail && (
+          <div className="overflow-x-auto mt-6">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-800">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-200 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-200 uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-200 uppercase tracking-wider">
+                    Description
+                  </th>
+                  <th scope="col" className="relative px-6 py-3">
+                    <span className="sr-only">Delete</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-gray-900 divide-y divide-gray-700">
+                {income.map((i) => (
+                  <tr key={i.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
+                      {new Date(i.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                      {currencyFormatter(i.amount)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    {i.description}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => {
+                          deleteIncomeEntryHandler(i.id);
+                        }}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaRegTrashAlt />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {showIncomeDetail && <IncomeHistoryDoughnut />} {/* Menampilkan grafik pendapatan jika showIncomeDetail true */}
+      </section>
+
+           {/* My Expenses Section */}
+      <section className="py-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-2xl">My Expenses</h3>
+          <button
+            className="text-lime-500 hover:text-lime-700"
+            onClick={() => setShowExpenseDetail(!showExpenseDetail)}
+          >
+            {showExpenseDetail ? "Hide Details" : "Show Details"}
+          </button>
+        </div>
+        {showExpenseDetail && (
           <div className="flex flex-col gap-4 mt-6">
-            {income.map((i) => (
-              <div className="flex justify-between item-center" key={i.id}>
-                <div>
-                  <p className="font-semibold">{i.description}</p>
-                  <small className="text-xs">{i.createdAt.toISOString()}</small>
-                </div>
-                <p className="flex items-center gap-2">
-                {currencyFormatter(i.amount)}
-                <button
-                  onClick={() => {
-                    deleteIncomeEntryHandler(i.id);
-                  }}
-                >
-                  <FaRegTrashAlt />
-                </button>
-              </p>
-              </div>
+            {expenses.map((expense) => (
+              <ExpenseCategoryItem key={expense.id} expense={expense} />
             ))}
           </div>
-          <IncomeHistoryDoughnut />
-        </section>
-
-
-        {/* Expenses */}
-        <section className="py-6">
-          <h3 className="text-2xl">My Expenses</h3>
-          <div className="flex flex-col gap-4 mt-6">
-            {expenses.map((expense) => {
-              return <ExpenseCategoryItem key={expense.id} expense={expense} />;
-            })}
-          </div>
-        </section>
-
-        {/* Chart Section */}
-        <section className="py-6">
-          <a id="stats" />
-          <h3 className="text-2xl">Statement</h3>
-          <div className="w-1/2 mx-auto">
-            <Doughnut
-              data={{
-                labels: expenses.map((expense) => expense.title),
-                datasets: [
-                  {
-                    label: 'Expenses',
-                    data: expenses.map((expense) => expense.total),
-                    backgroundColor: expenses.map((expense) => expense.color),
-                    borderColor: ['#18181b'],
-                    borderWidth: 5,
-                  },
-                ],
-              }}
-            />
-          </div>
-        </section>
+        )}
+        {showExpenseDetail && (
+          <section className="py-6" id="stats">
+            <div className="w-1/2 mx-auto mt-6" style={{ position: 'relative', height: '40vh', width: '40vw' }}>
+              <Doughnut
+                data={{
+                  labels: expenses.map((expense) => expense.title),
+                  datasets: [
+                    {
+                      label: 'Expenses',
+                      data: expenses.map((expense) => expense.total),
+                      backgroundColor: expenses.map((expense) => expense.color),
+                      borderColor: ['#18181b'],
+                      borderWidth: 5,
+                    },
+                  ],
+                }}
+                options={{
+                  maintainAspectRatio: false,
+                  responsive: true,
+                }}
+              />
+            </div>
+          </section>
+        )}
+      </section>
       </main>
     </>
   );

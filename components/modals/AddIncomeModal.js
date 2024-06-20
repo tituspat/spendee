@@ -41,13 +41,27 @@ function AddIncomeModal({ show, onClose }) {
     }
   };
 
+  const handleCategoryChange = (e) => {
+    if (e.target.value === "custom") {
+      // Menampilkan input untuk kategori kustom
+      const customCategory = prompt("Enter custom category:");
+      setCustomCategory(customCategory);
+      descriptionRef.current.dataset.category = customCategory;
+    } else {
+      // Memilih kategori dari dropdown
+      setCustomCategory("");
+      descriptionRef.current.dataset.category = e.target.value;
+    }
+  };
+
 
   return (
     <Modal show={show} onClose={onClose}>
+      <h2 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}> INCOME </h2>
       <form onSubmit={addIncomeHandler} className="flex flex-col gap-4">
         <div className="input-group">
-          <label htmlFor="amount">Income Amount</label>
-          <input
+          <label htmlFor="amount">Income Amount : </label>
+          <input className="inputan"
             type="number"
             name="amount"
             ref={amountRef}
@@ -59,8 +73,8 @@ function AddIncomeModal({ show, onClose }) {
         </div>
 
         <div className="input-group">
-          <label htmlFor="description">Description</label>
-          <input
+          <label htmlFor="description">Description : </label>
+          <input className="inputan"
             name="description"
             ref={descriptionRef}
             type="text"
@@ -68,7 +82,7 @@ function AddIncomeModal({ show, onClose }) {
             required
           />
         </div>
-
+        <p></p>
         <button type="submit" className="btn btn-primary">
           Add entry
         </button>
