@@ -52,7 +52,7 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply plan.out
+        run: terraform apply -auto-approve
 
       - name: wait 30s
         run: sleep 30
