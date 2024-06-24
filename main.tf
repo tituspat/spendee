@@ -18,6 +18,7 @@ resource "aws_subnet" "main" {
 resource "aws_security_group" "allow_port_3000" {
   vpc_id = aws_vpc.main.id
 
+
   ingress {
     from_port   = 3000
     to_port     = 3000
