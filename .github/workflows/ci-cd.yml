@@ -73,8 +73,8 @@ jobs:
       - name: Get SSH Private Key
         id: ssh_private_key
         run: |
-          SSH_PRIVATE_KEY=$(terraform show -json | jq -r '.value.root_module.resources[] | select(.type == "tls_private_key" and .name == "rsa_4096") | .values.spendy-2')
-          echo "${SSG_PRIVATE_KEY}" > ssh_private_key.pem
+          SSH_PRIVATE_KEY=$(cat spendy-2.pem)
+          echo "${SSH_PRIVATE_KEY}" > ssh_private_key.pem
           chmod 600 ssh_private_key.pem
           echo "::set-output name=ssh_private_key::ssh_private_key.pem"
           echo "$SSH_PRIVATE_KEY"
