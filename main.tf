@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-southeast-1"
+  region = "ap-southeast-1"  # Ganti dengan region AWS yang Anda gunakan
 }
 
 # Membuat VPC
@@ -33,38 +33,31 @@ resource "aws_security_group" "allow_port_3000" {
   }
 }
 
-resource "aws_instance" "app" {
-  ami           = "ami-003c463c8207b4dfa"  # AMI untuk Amazon Linux 2
-  instance_type = "t2.micro"
+# Menggunakan template untuk user data
+data "template_file" "userdata" {
+  template = file("${path.module}/userdata.tpl")
+
+  vars = {
+    dockerhub_username = var.dockerhub_username
+    dockerhub_password = var.dockerhub_password
+  }
+}
+
+# Membuat Instance EC2
+resource "aws_instance" "app_server" {
+  ami                    = "ami-003c463c8207b4dfa"  # Ganti dengan AMI yang sesuai
+  instance_type          = "t2.micro"
   subnet_id              = aws_subnet.main.id
   security_groups        = [aws_security_group.allow_port_3000.name]
   associate_public_ip_address = true
 
-  user_data = <<-EOF
-              #!/bin/bash
-              apt-get update -y
-              apt-get install -y docker.io
-              systemctl start docker
-              systemctl enable docker
-              docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
-              docker rm -f spendy-container
-              docker pull pat0112/spendy:latest
-              docker run -d -p 3000:3000 --name spendy-container pat0112/spendy
-              EOF
+  user_data = data.template_file.userdata.rendered
 
   tags = {
-    Name = "spendy-EC2"
+    Name = "AppServer"
   }
-
-  key_name = "spendy-2"  # Ganti dengan nama kunci SSH Anda
-
 }
 
-
-output "output" {
-  value = {
-    ssh_access = "ssh ubuntu@${aws_instance.app.public_ip}"
-    public_ip = aws_instance.app.public_ip
-    public_dns = aws_instance.app.public_dns
-  }
+output "instance_public_ip" {
+  value = aws_instance.app_server.public_ip
 }
