@@ -32,20 +32,19 @@ resource "aws_security_group" "allow_port_3000" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
+# Membuat Instance EC2
 resource "aws_instance" "app" {
-  ami           = "ami-003c463c8207b4dfa"  # AMI untuk Amazon Linux 2
-  instance_type = "t2.micro"
+  ami                    = "ami-003c463c8207b4dfa"  # AMI untuk Amazon Linux 2
+  instance_type          = "t2.micro"
   subnet_id              = aws_subnet.main.id
   security_groups        = [aws_security_group.allow_port_3000.name]
   associate_public_ip_address = true
 
+  key_name = "spendy-2"  # Ganti dengan nama kunci SSH Anda
+
   tags = {
     Name = "ExpressJS-EC2"
   }
-
-  key_name = "spendy-2"  # Ganti dengan nama kunci SSH Anda
-
 }
 
 
