@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 # Membuat VPC
-resource "aws_vpc" "existing" {
+data "aws_vpc" "existing" {
   id = "vpc-04e356bf9b40a9111"  # Ganti dengan ID VPC yang sudah ada
 }
 
