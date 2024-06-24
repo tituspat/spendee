@@ -1,4 +1,4 @@
-# Github User Finder Project
+# Spendee Project
 Project ini merupakan sebuah project web dimana pengguna dapat mencatat pemasukan dan pengeluaran. Project ini menggunakan praktik devops di keseluruahan proses pengembangan. Aplikasi ini menggunakan kotlin sebagai dasar dari aplikasi ini. 
 
 Berikut adalah pengembang dari project ini
