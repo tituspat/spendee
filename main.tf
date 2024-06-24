@@ -2,6 +2,10 @@ provider "aws" {
   region = "ap-southeast-1"
 }
 
+resource "tls_private_key" "rsa_4096" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
 # Membuat VPC
 data "aws_vpc" "existing" {
