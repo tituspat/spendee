@@ -47,17 +47,58 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Terraform Init
-        run: terraform init
       - name: Terraform Apply
         id: apply
         env:
-          # TF_VAR_ec2_name: '${{ github.event.inputs.ec2-name }}'
-          TF_VAR_dockerhub_username: ${{ secrets.DOCKER_USERNAME }}
-          TF_VAR_dockerhub_password: ${{ secrets.DOCKER_PASSWORD }}
+          TF_VAR_ec2_name: '${{ github.event.inputs.ec2-name }}'
         run: |
+          terraform validate
+          terraform init
           terraform plan 
-          terraform apply -auto-approve
+          terraform apply.out
+
+      - name: wait 30s
+        run: sleep 30
+
+      - name: Get Instance IP
+        id: instance_ip
+        run: |
+          INSTANCE_IP=$(terraform output -raw instance_ip)
+          echo "::set-output name=instance_ip::$INSTANCE_IP"
+          echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
+          echo ${{ env.INSTANCE_IP }}
+
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sude apt-get install-y jq
+
+      - name: Get SSH Private Key
+        id: ssh_private_key
+        run: |
+          SSH_PRIVATE_KEY=$(terraform show -json | jq -r '.value.root_module.resources[] | select(.type == "tls_private_key" and .name == "rsa_4096") | .values.private_key_pem')
+          echo "${SSG_PRIVATE_KEY}" > ssh_private_key.pem
+          chmod 600 ssh_private_key.pem
+          echo "::set-output name=ssh_private_key::ssh_private_key.pem"
+          echo "$SSH_PRIVATE_KEY"
+
+      - name: Push Docker Image to EC2 Instance
+        shell: /usr/bin/bash -e {0}
+        env:
+          AWS_REGION: ap-southeast-1
+          TF_VAR_access_key: ${{ secrets.TF_USER_AWS_KEY}}
+          TF_VAR_secret-key: '${{ secrets.TF_USER_AWS_SECRET }}'
+          INSTANCE_IP: ${{ env.INSTANCE_IP }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_private_key.pem ubuntu@${{env.INSTANCE_IP}} '
+            sudo apt-get update
+            sudo apt_get install -y docker.io
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo usermod -aG docker ubuntu
+            sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{secrets.DOCKER_PASSWORD}}
+            sudo docker pull ${{secrets.DOCKER_USERNAME}}/spendy:lastest
+            sudo docker run -d -p 3000:3000 ${{secrets.DOCKER_USERNAME}}/spendy:lastest'
 
   # deploy:
   #   needs: [build]
