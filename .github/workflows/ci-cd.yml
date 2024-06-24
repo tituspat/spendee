@@ -47,12 +47,16 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: init
-        run: terraform init
-
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve
+        env:
+          TF_VAR_docker_username: ${{ secrets.DOCKER_USERNAME }}
+          TF_VAR_docker_password: ${{ secrets.DOCKER_PASSWORD }}
+          TF_VAR_docker_image: ${{secrets.DOCKER_USERNAME}}/spendy:lastest
+        run: |
+          terraform validate
+          terraform init
+          terraform apply -auto-approve
 
       - name: wait 30s
         run: sleep 30
