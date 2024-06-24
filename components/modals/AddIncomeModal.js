@@ -1,27 +1,35 @@
 import { useRef, useEffect, useContext } from "react";
 import { currencyFormatter } from "@/lib/utils";
 
+
 import { financeContext } from "@/lib/store/finance-context";
 import { authContext } from "@/lib/store/auth-context";
+
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
 
+
 import Modal from "@/components/Modal";
 
+
 import { toast } from "react-toastify";
+
 
 function AddIncomeModal({ show, onClose }) {
   const amountRef = useRef();
   const descriptionRef = useRef();
-  const { income, addIncomeItem, removeIncomeItem } =
+  const { income, addIncomeItem} =
     useContext(financeContext);
 
+
   const { user } = useContext(authContext);
+
 
   // Handler Functions
   const addIncomeHandler = async (e) => {
     e.preventDefault();
+
 
     const newIncome = {
       amount: +amountRef.current.value,
@@ -29,6 +37,7 @@ function AddIncomeModal({ show, onClose }) {
       createdAt: new Date(),
       uid: user.uid,
     };
+
 
     try {
       await addIncomeItem(newIncome);
@@ -41,22 +50,30 @@ function AddIncomeModal({ show, onClose }) {
     }
   };
 
-  const deleteIncomeEntryHandler = async (incomeId) => {
-    try {
-      await removeIncomeItem(incomeId);
-      toast.success("Income deleted successfully.");
-    } catch (error) {
-      console.log(error.message);
-      toast.error(error.message);
+
+  const handleCategoryChange = (e) => {
+    if (e.target.value === "custom") {
+      // Menampilkan input untuk kategori kustom
+      const customCategory = prompt("Enter custom category:");
+      setCustomCategory(customCategory);
+      descriptionRef.current.dataset.category = customCategory;
+    } else {
+      // Memilih kategori dari dropdown
+      setCustomCategory("");
+      descriptionRef.current.dataset.category = e.target.value;
     }
   };
 
+
+
+
   return (
     <Modal show={show} onClose={onClose}>
+      <h2 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}> INCOME </h2>
       <form onSubmit={addIncomeHandler} className="flex flex-col gap-4">
         <div className="input-group">
-          <label htmlFor="amount">Income Amount</label>
-          <input
+          <label htmlFor="amount">Income Amount : </label>
+          <input className="inputan"
             type="number"
             name="amount"
             ref={amountRef}
@@ -67,9 +84,10 @@ function AddIncomeModal({ show, onClose }) {
           />
         </div>
 
+
         <div className="input-group">
-          <label htmlFor="description">Description</label>
-          <input
+          <label htmlFor="description">Description : </label>
+          <input className="inputan"
             name="description"
             ref={descriptionRef}
             type="text"
@@ -77,38 +95,16 @@ function AddIncomeModal({ show, onClose }) {
             required
           />
         </div>
-
+        <p></p>
         <button type="submit" className="btn btn-primary">
           Add entry
         </button>
       </form>
 
-      <div className="flex flex-col gap-4 mt-6">
-        <h3 className="text-2xl font-bold">Income History</h3>
 
-        {income.map((i) => {
-          return (
-            <div className="flex justify-between item-center" key={i.id}>
-              <div>
-                <p className="font-semibold">{i.description}</p>
-                <small className="text-xs">{i.createdAt.toISOString()}</small>
-              </div>
-              <p className="flex items-center gap-2">
-                {currencyFormatter(i.amount)}
-                <button
-                  onClick={() => {
-                    deleteIncomeEntryHandler(i.id);
-                  }}
-                >
-                  <FaRegTrashAlt />
-                </button>
-              </p>
-            </div>
-          );
-        })}
-      </div>
     </Modal>
   );
 }
+
 
 export default AddIncomeModal;

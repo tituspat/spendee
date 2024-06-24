@@ -39,5 +39,14 @@
 
   .input-group {
     @apply flex flex-col gap-4;
+    border-radius: 8px;
+  }
+  .inputan {
+    @apply p-2 border border-gray-300 rounded-md bg-transparent;
+    border-radius: 8px;
+    font-size: 16px; /* Menggunakan nilai langsung tanpa tanda kutip */
+    background-color: rgba(255, 255, 255, 0.2); /* Menghapus tanda kutip pada nilai rgba */
+    padding: 0.5rem; /* Menggunakan nilai langsung tanpa tanda kutip */
+    border: 1px solid #ccc; /* Menghapus tanda kutip pada nilai solid color */
   }
 }
