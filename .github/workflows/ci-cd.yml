@@ -53,8 +53,8 @@ jobs:
         id: apply
         env:
           # TF_VAR_ec2_name: '${{ github.event.inputs.ec2-name }}'
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          TF_VAR_dockerhub_username: ${{ secrets.DOCKER_USERNAME }}
+          TF_VAR_dockerhub_password: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           terraform plan 
           terraform apply -auto-approve
