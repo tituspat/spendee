@@ -38,5 +38,5 @@ resource "aws_instance" "app" {
 
 
 output "output" {
-    public_ip = aws_instance.app.public_ip
+    value = aws_instance.app.public_ip
 }
