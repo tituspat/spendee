@@ -54,7 +54,6 @@ jobs:
           TF_VAR_docker_password: ${{ secrets.DOCKER_PASSWORD }}
           TF_VAR_docker_image: ${{secrets.DOCKER_USERNAME}}/spendy:lastest
         run: |
-          terraform validate
           terraform init
           terraform apply -auto-approve
 
