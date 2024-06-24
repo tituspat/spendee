@@ -68,7 +68,7 @@ jobs:
       - name: Install jq
         run: |
           sudo apt-get update
-          sudo apt-get install-y jq
+          sudo apt-get install -y jq
 
       - name: Get SSH Private Key
         id: ssh_private_key
