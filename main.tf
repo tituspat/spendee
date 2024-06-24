@@ -2,10 +2,6 @@ provider "aws" {
   region = "ap-southeast-1"
 }
 
-resource "tls_private_key" "rsa_4096" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
 
 # Membuat VPC
 data "aws_vpc" "existing" {
@@ -50,25 +46,7 @@ resource "aws_instance" "app" {
     Name = "ExpressJS-EC2"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y docker.io",
-      "sudo systemctl start docker",
-      "sudo systemctl enable docker",
-      "sudo usermod -aG docker ubuntu",
-      "docker login -u ${var.docker_username} -p ${var.docker_password}",
-      "docker pull ${var.docker_image}",
-      "docker run -d -p 3000:3000 ${var.docker_image}"
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = tls_private_key.rsa_4096.private_key_pem
-      host        = self.public_ip
-    }
-  }
+  depends_on = [aws_security_group.allow_port_3000]
 }
 
 # Output
