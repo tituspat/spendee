@@ -51,7 +51,7 @@ Dari file-file tersebut lakukan commit dan push ke repository sesuai dengan bran
 git push origin "branch"
 
 >Cara melakukan pull pada perubahan yang telah anggota buat
->1. Pilih  branch yang akan dipull
+1. Pilih  branch yang akan dipull
 
  Ketikkan perintah
 ```sh
