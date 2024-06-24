@@ -1,3 +1,16 @@
+variable "docker_username" {
+  description = "Docker username"
+}
+
+variable "docker_password" {
+  description = "Docker password"
+  sensitive   = true
+}
+
+variable "docker_image" {
+  description = "Docker image to pull and run"
+}
+
 provider "aws" {
   region = "ap-southeast-1"
 }
