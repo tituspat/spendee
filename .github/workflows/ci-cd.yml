@@ -28,7 +28,9 @@ jobs:
         run: docker push pat0112/spendy:latest
 
   provision-ec2:
+    needs: [build]
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -44,24 +46,27 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
       - name: Terraform Apply
         id: apply
         env:
           TF_VAR_ec2_name: '${{ github.event.inputs.ec2-name }}'
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         run: |
-          terraform init
-          terraform validate
           terraform plan 
           terraform apply -auto-approve
 
-  deploy:
-    needs: [build]
-    runs-on: self-hosted
+  # deploy:
+  #   needs: [build]
+  #   runs-on: self-hosted
 
-    steps:
-      - name: Delete Old docker container
-        run: sudo docker rm -f spendy-container
-      - name: Pull Docker image
-        run: sudo docker pull pat0112/spendy:latest
-      - name: Run Docker Container
-        run: sudo docker run -d -p 3000:3000 --name spendy-container pat0112/spendy
+  #   steps:
+  #     - name: Delete Old docker container
+  #       run: sudo docker rm -f spendy-container
+  #     - name: Pull Docker image
+  #       run: sudo docker pull pat0112/spendy:latest
+  #     - name: Run Docker Container
+  #       run: sudo docker run -d -p 3000:3000 --name spendy-container pat0112/spendy

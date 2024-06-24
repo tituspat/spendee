@@ -46,9 +46,10 @@ resource "aws_instance" "app" {
               apt-get install -y docker.io
               systemctl start docker
               systemctl enable docker
-              docker login -u <YOUR_DOCKERHUB_USERNAME> -p <YOUR_DOCKERHUB_PASSWORD>
-              docker pull <YOUR_DOCKERHUB_REPOSITORY>:<TAG>
-              docker run -d -p 3000:3000 <YOUR_DOCKERHUB_REPOSITORY>:<TAG>
+              docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+              docker rm -f spendy-container
+              docker pull pat0112/spendy:latest
+              docker run -d -p 3000:3000 --name spendy-container pat0112/spendy
               EOF
 
   tags = {
