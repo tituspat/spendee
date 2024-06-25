@@ -8,7 +8,7 @@ data "aws_vpc" "existing" {
 }
 
 # Gantikan dengan ID Subnet yang sudah ada
-resource "aws_subnet" "existing" {
+data "aws_subnet" "existing" {
   id = "subnet-0f1d0c19af3a68b6b"  # Ganti dengan ID Subnet yang sudah ada
 }
 
@@ -35,7 +35,7 @@ resource "aws_security_group" "allow_port_3000" {
 resource "aws_instance" "app" {
   ami                    = "ami-003c463c8207b4dfa"  # AMI untuk Amazon Linux 2
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.existing.id
+  subnet_id              = data.aws_subnet.existing.id
   vpc_security_group_ids = [aws_security_group.allow_port_3000.id]
   associate_public_ip_address = true
 
