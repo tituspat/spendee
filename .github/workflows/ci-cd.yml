@@ -85,15 +85,16 @@ jobs:
           TF_VAR_secret-key: '${{ secrets.TF_USER_AWS_SECRET }}'
           INSTANCE_IP: ${{ env.INSTANCE_IP }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_private_key.pem ubuntu@${{env.INSTANCE_IP}} '
-            sudo apt-get update
-            sudo apt_get install -y docker.io
-            sudo systemctl start docker
-            sudo systemctl enable docker
-            sudo usermod -aG docker ubuntu
-            sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{secrets.DOCKER_PASSWORD}}
-            sudo docker pull ${{secrets.DOCKER_USERNAME}}/spendy:lastest
-            sudo docker run -d -p 3000:3000 ${{secrets.DOCKER_USERNAME}}/spendy:lastest'
+          ssh -o StrictHostKeyChecking=no -i ssh_private_key.pem ubuntu@${{ env.INSTANCE_IP }} '
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo usermod -aG docker ubuntu
+          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/final_project_pso:latest
+          sudo docker run -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/final_project_pso:latest
+          '
 
   # deploy:
   #   needs: [build]
