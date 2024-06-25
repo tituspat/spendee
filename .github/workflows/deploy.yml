@@ -1,10 +1,10 @@
-name: CI Pipeline
+name: Deploy
 
 on:
   push:
-    branches: ['main']
+    branches: ['dev']
   pull_request:
-    branches: ['main']
+    branches: ['dev']
 
 jobs:
   build:
@@ -95,15 +95,3 @@ jobs:
           sudo docker pull pat0112/spendy:latest
           sudo docker run -d -p 3000:3000 pat0112/spendy:latest
           '
-
-  # deploy:
-  #   needs: [build]
-  #   runs-on: self-hosted
-
-  #   steps:
-  #     - name: Delete Old docker container
-  #       run: sudo docker rm -f spendy-container
-  #     - name: Pull Docker image
-  #       run: sudo docker pull pat0112/spendy:latest
-  #     - name: Run Docker Container
-  #       run: sudo docker run -d -p 3000:3000 --name spendy-container pat0112/spendy
