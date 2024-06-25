@@ -3,20 +3,18 @@ provider "aws" {
 }
 
 # Membuat VPC
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+data "aws_vpc" "main" {
+  id = "vpc-04e356bf9b40a9111"
 }
 
 # Membuat Subnet
-resource "aws_subnet" "main" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "ap-southeast-1a"
+data "aws_subnet" "main" {
+  id = "subnet-0f1d0c19af3a68b6b" 
 }
 
 # Membuat Security Group
 resource "aws_security_group" "allow_port_3000" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = data.aws_vpc.main.id
 
   ingress {
     from_port   = 3000
@@ -37,7 +35,7 @@ resource "aws_security_group" "allow_port_3000" {
 resource "aws_instance" "app" {
   ami                    = "ami-003c463c8207b4dfa"  # AMI untuk Amazon Linux 2
   instance_type          = "t2.micro"
-  subnet_id              = data.aws_subnet.existing.id
+  subnet_id              = data.aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.allow_port_3000.id]
   associate_public_ip_address = true
 
