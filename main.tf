@@ -12,6 +12,30 @@ data "aws_subnet" "main" {
   id = "subnet-0f1d0c19af3a68b6b" 
 }
 
+resource "tls_private_key" "rsa_4096" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+variable "key_name" {
+  description = "terraform-key"
+  default     = "terraform-key"
+}
+
+resource "aws_key_pair" "service_key_pair" {
+  public_key = tls_private_key.rsa_4096.public_key_openssh
+}
+
+resource "local_file" "private_key" {
+  content  = tls_private_key.rsa_4096.private_key_pem
+  filename = var.key_name
+}
+
+resource "aws_security_group" "allow_http_ssh" {
+  description = "Allow HTTP and SSH inbound traffic"
+  # Add your security group configuration here
+}
+
 # Membuat Security Group
 resource "aws_security_group" "allow_port_3000" {
   vpc_id = data.aws_vpc.main.id
