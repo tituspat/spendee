@@ -1,20 +1,6 @@
-variable "docker_username" {
-  description = "Docker username"
-}
-
-variable "docker_password" {
-  description = "Docker password"
-  sensitive   = true
-}
-
-variable "docker_image" {
-  description = "Docker image to pull and run"
-}
-
 provider "aws" {
   region = "ap-southeast-1"
 }
-
 
 # Membuat VPC
 data "aws_vpc" "existing" {
@@ -49,7 +35,7 @@ resource "aws_security_group" "allow_port_3000" {
 resource "aws_instance" "app" {
   ami                    = "ami-003c463c8207b4dfa"  # AMI untuk Amazon Linux 2
   instance_type          = "t2.micro"
-  subnet_id              = data.aws_subnet.existing.id
+  subnet_id              = aws_subnet.existing.id
   vpc_security_group_ids = [aws_security_group.allow_port_3000.id]
   associate_public_ip_address = true
 
@@ -59,25 +45,7 @@ resource "aws_instance" "app" {
     Name = "ExpressJS-EC2"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y docker.io",
-      "sudo systemctl start docker",
-      "sudo systemctl enable docker",
-      "sudo usermod -aG docker ubuntu",
-      "docker login -u ${var.docker_username} -p ${var.docker_password}",
-      "docker pull ${var.docker_image}",
-      "docker run -d -p 3000:3000 ${var.docker_image}"
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("${path.module}/spendy-2.pem")
-      host        = self.public_ip
-    }
-  }
+  depends_on = [aws_security_group.allow_port_3000]
 }
 
 # Output
