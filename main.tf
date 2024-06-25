@@ -56,7 +56,7 @@ resource "aws_security_group" "allow_http_ssh" {
   }
 }
 
-resource "aws_instance" "old_public_instance" {
+resource "aws_instance" "public_instance" {
   ami = "ami-003c463c8207b4dfa"
   instance_type = "t2.micro"
   key_name = aws_key_pair.service_key_pair.key_name
@@ -65,53 +65,8 @@ resource "aws_instance" "old_public_instance" {
   tags = {
     Name = "terraform-aws"
   }
-
-    lifecycle {
-    create_before_destroy = true
-  }
-}
-
-
-# Define the Elastic IP to be reassigned
-resource "aws_eip" "elastic_ip" {
-  instance = aws_instance.old_public_instance.id
-  vpc      = true
-}
-
-# Define the new instance (to replace the old instance)
-resource "aws_instance" "new_instance" {
-  ami                    = "ami-003c463c8207b4dfa"
-  instance_type          = "t2.micro"
-  key_name               = aws_key_pair.service_key_pair.key_name
-  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
-
-  tags = {
-    Name = "terraform-aws"
-  }
-
-  depends_on = [aws_instance.old_public_instance]
-}
-
-# Reassign the Elastic IP to the new instance
-resource "aws_eip_association" "eip_assoc" {
-  instance_id   = aws_instance.new_instance.id
-  allocation_id = aws_eip.elastic_ip.id
 }
 
 output "instance_ip" {
-  value = aws_eip.elastic_ip.public_ip
+  value = aws_instance.public_instance.public_ip
 }
-# resource "aws_eip" "elastic_ip" {
-#   vpc = true
-#   id = "eipassoc-02edc7d4d862d375d"
-# }
-
-# resource "aws_eip_association" "eip_assoc" {
-#   instance_id   = aws_instance.public_instance.id
-#   allocation_id = aws_eip.elastic_ip.id
-# }
-
-# output "instance_ip" {
-#   value = aws_eip.elastic_ip.public_ip
-# }
-# # value = aws_instance.public_instance.public_ip
