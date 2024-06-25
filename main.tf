@@ -48,6 +48,6 @@ resource "aws_instance" "app" {
   depends_on = [aws_security_group.allow_port_3000]
 }
 
-output "output" {
+output "instance_ip" {
     value = aws_instance.app.public_ip
 }
