@@ -19,14 +19,15 @@ resource "tls_private_key" "rsa_4096" {
 
 variable "key_name" {
   description = "key name for ssh access"
-  default     = "terra-ssh"
+  default     = "spendy-2"
 }
 
 # Creating an AWS key pair
-resource "aws_key_pair" "service_key_pair" {
-  key_name   = var.key_name
-  public_key = tls_private_key.rsa_4096.public_key_openssh
-}
+# resource "aws_key_pair" "service_key_pair" {
+#  key_name   = var.key_name
+#  public_key = tls_private_key.rsa_4096.public_key_openssh
+#}
+
 # Storing the private key locally
 resource "local_file" "private_key" {
   content  = tls_private_key.rsa_4096.private_key_pem
