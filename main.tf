@@ -8,7 +8,7 @@ data "aws_vpc" "existing" {
 }
 
 # Gantikan dengan ID Subnet yang sudah ada
-data "aws_subnet" "existing" {
+resource "aws_subnet" "existing" {
   id = "subnet-0f1d0c19af3a68b6b"  # Ganti dengan ID Subnet yang sudah ada
 }
 
