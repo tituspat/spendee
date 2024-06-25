@@ -29,7 +29,7 @@ resource "aws_key_pair" "service_key_pair" {
 # Storing the private key locally
 resource "local_file" "private_key" {
   content  = tls_private_key.rsa_4096.private_key_pem
-  filename = var.key_name
+  filename = "${var.key_name}.pem"
 }
 
 resource "aws_security_group" "allow_http_ssh" {
@@ -87,7 +87,7 @@ resource "aws_instance" "app" {
   vpc_security_group_ids = [aws_security_group.allow_port_3000.id, aws_security_group.allow_http_ssh.id]
   associate_public_ip_address = true
 
-  key_name = var.key_name  # Ganti dengan nama kunci SSH Anda
+  key_name                = aws_key_pair.service_key_pair.key_name
 
   tags = {
     Name = "ExpressJS-EC2"
