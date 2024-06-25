@@ -29,7 +29,7 @@ resource "aws_key_pair" "service_key_pair" {
 # Storing the private key locally
 resource "local_file" "private_key" {
   content  = tls_private_key.rsa_4096.private_key_pem
-  filename = "${var.key_name}.pem"
+  filename = "spendy-2"
 }
 
 resource "aws_security_group" "allow_http_ssh" {
