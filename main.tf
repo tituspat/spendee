@@ -23,10 +23,9 @@ variable "key_name" {
 }
 
 # Creating an AWS key pair
-# resource "aws_key_pair" "service_key_pair" {
-#  key_name   = var.key_name
-#  public_key = tls_private_key.rsa_4096.public_key_openssh
-#}
+ resource "aws_key_pair" "service_key_pair" {
+  public_key = tls_private_key.rsa_4096.public_key_openssh
+}
 
 # Storing the private key locally
 resource "local_file" "private_key" {
