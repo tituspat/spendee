@@ -19,7 +19,7 @@ resource "tls_private_key" "rsa_4096" {
 
 variable "key_name" {
   description = "key name for ssh access"
-  default     = "spendy-2"
+  default     = "terra-ssh"
 }
 
 # Creating an AWS key pair
