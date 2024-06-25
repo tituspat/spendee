@@ -42,7 +42,7 @@ jobs:
           api_key: ${{ secrets.SOOS_API_KEY }}
           project_name: "DAST-GitHub-Action"
           scan_mode: "baseline"
-          target_url: "https://www.example.com/"
+          target_url: "http://ec2-18-136-106-83.ap-southeast-1.compute.amazonaws.com:3000"
           output_format: "sarif"
       - name: Upload SOOS DAST SARIF Report
         uses: github/codeql-action/upload-sarif@v3
