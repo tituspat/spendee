@@ -22,8 +22,7 @@ variable "key_name" {
   default     = "spendy-2"
 }
 
-# Creating an AWS key pair
- resource "aws_key_pair" "service_key_pair" {
+resource "aws_key_pair" "service_key_pair" {
   public_key = tls_private_key.rsa_4096.public_key_openssh
 }
 
@@ -88,7 +87,7 @@ resource "aws_instance" "app" {
   vpc_security_group_ids = [aws_security_group.allow_port_3000.id, aws_security_group.allow_http_ssh.id]
   associate_public_ip_address = true
 
-  key_name = "spendy-2"  # Ganti dengan nama kunci SSH Anda
+  key_name = var.key_name  # Ganti dengan nama kunci SSH Anda
 
   tags = {
     Name = "ExpressJS-EC2"
