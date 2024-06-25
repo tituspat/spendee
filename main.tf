@@ -18,25 +18,50 @@ resource "tls_private_key" "rsa_4096" {
 }
 
 variable "key_name" {
-  description = "spendy-2"
+  description = "key name for ssh access"
   default     = "spendy-2"
 }
 
+# Creating an AWS key pair
 resource "aws_key_pair" "service_key_pair" {
+  key_name   = var.key_name
   public_key = tls_private_key.rsa_4096.public_key_openssh
 }
-
+# Storing the private key locally
 resource "local_file" "private_key" {
   content  = tls_private_key.rsa_4096.private_key_pem
-  filename = var.key_name
+  filename = "${var.key_name}.pem"
 }
 
 resource "aws_security_group" "allow_http_ssh" {
   description = "Allow HTTP and SSH inbound traffic"
   # Add your security group configuration here
+
+  vpc_id = data.aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
-# Membuat Security Group
+# Creating a security group that allows port 3000 inbound traffic
 resource "aws_security_group" "allow_port_3000" {
   vpc_id = data.aws_vpc.main.id
 
@@ -60,7 +85,7 @@ resource "aws_instance" "app" {
   ami                    = "ami-003c463c8207b4dfa"  # AMI untuk Amazon Linux 2
   instance_type          = "t2.micro"
   subnet_id              = data.aws_subnet.main.id
-  vpc_security_group_ids = [aws_security_group.allow_port_3000.id]
+  vpc_security_group_ids = [aws_security_group.allow_port_3000.id, aws_security_group.allow_http_ssh.id]
   associate_public_ip_address = true
 
   key_name = "spendy-2"  # Ganti dengan nama kunci SSH Anda
@@ -69,7 +94,7 @@ resource "aws_instance" "app" {
     Name = "ExpressJS-EC2"
   }
 
-  depends_on = [aws_security_group.allow_port_3000]
+  depends_on = [aws_security_group.allow_port_3000, aws_security_group.allow_http_ssh]
 }
 
 output "instance_ip" {
