@@ -3,18 +3,20 @@ provider "aws" {
 }
 
 # Membuat VPC
-data "aws_vpc" "existing" {
-  id = "vpc-04e356bf9b40a9111"  # Ganti dengan ID VPC yang sudah ada
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
 }
 
-# Gantikan dengan ID Subnet yang sudah ada
-data "aws_subnet" "existing" {
-  id = "subnet-0f1d0c19af3a68b6b"  # Ganti dengan ID Subnet yang sudah ada
+# Membuat Subnet
+resource "aws_subnet" "main" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "ap-southeast-1a"
 }
 
 # Membuat Security Group
 resource "aws_security_group" "allow_port_3000" {
-  vpc_id = data.aws_vpc.existing.id
+  vpc_id = aws_vpc.main.id
 
   ingress {
     from_port   = 3000
@@ -48,8 +50,6 @@ resource "aws_instance" "app" {
   depends_on = [aws_security_group.allow_port_3000]
 }
 
-# Output
-output "instance_ip" {
-  value = aws_instance.app.public_ip
+output "output" {
+    value = aws_instance.app.public_ip
 }
-
