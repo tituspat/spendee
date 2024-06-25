@@ -69,11 +69,12 @@ resource "aws_instance" "public_instance" {
 
 resource "aws_eip" "elastic_ip" {
   vpc = true
+  id = "eipassoc-02edc7d4d862d375d"
 }
 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.public_instance.id
-  allocation_id = "eipassoc-02edc7d4d862d375d"
+  allocation_id = aws_eip.elastic_ip.id
 }
 
 output "instance_ip" {
