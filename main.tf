@@ -18,8 +18,8 @@ resource "tls_private_key" "rsa_4096" {
 }
 
 variable "key_name" {
-  description = "terraform-key"
-  default     = "terraform-key"
+  description = "spendy-2"
+  default     = "spendy-2"
 }
 
 resource "aws_key_pair" "service_key_pair" {
