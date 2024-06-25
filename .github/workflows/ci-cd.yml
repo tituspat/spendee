@@ -92,8 +92,8 @@ jobs:
           sudo systemctl enable docker
           sudo usermod -aG docker ubuntu
           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/final_project_pso:latest
-          sudo docker run -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/final_project_pso:latest
+          sudo docker pull pat0112/spendy:latest
+          sudo docker run -d -p 3000:3000 pat0112/spendy:latest
           '
 
   # deploy:
