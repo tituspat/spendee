@@ -89,7 +89,7 @@ resource "aws_instance" "new_instance" {
     Name = "terraform-aws"
   }
 
-  depends_on = [aws_instance.old_instance]
+  depends_on = [aws_instance.old_public_instance]
 }
 
 # Reassign the Elastic IP to the new instance
