@@ -24,8 +24,6 @@ name: "SOOS DAST Scan"
 on:
   push:
     branches: [ "gadipake" ]
-  pull_request:
-    branches: [ "gadipake" ]
 
 jobs:
   soos:
