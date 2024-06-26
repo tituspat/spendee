@@ -159,7 +159,7 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center h-full">
   {/* My Balance Section */}
   <section className="py-3 text-center">
-    <small className="text-gray-400 text-md">My Balance</small>
+    <small className="text-gray-400 text-md">Balance</small>
     <h2 className="text-4xl font-bold">{currencyFormatter(balance)}</h2>
   </section>
 
